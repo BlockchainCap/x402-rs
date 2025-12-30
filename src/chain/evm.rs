@@ -35,6 +35,7 @@ use alloy::sol_types::{Eip712Domain, SolCall, SolStruct, eip712_domain};
 use alloy::{hex, sol};
 use async_trait::async_trait;
 use dashmap::DashMap;
+use std::collections::HashMap;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use tokio::sync::Mutex;
@@ -675,7 +676,7 @@ where
             scheme: Scheme::Exact,
             extra: None,
         }];
-        Ok(SupportedPaymentKindsResponse { kinds })
+        Ok(SupportedPaymentKindsResponse { kinds, _extra: HashMap::new() })
     }
 }
 

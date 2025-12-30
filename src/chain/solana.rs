@@ -7,6 +7,7 @@ use solana_sdk::pubkey::Pubkey;
 use solana_sdk::signature::{Keypair, Signature};
 use solana_sdk::signer::Signer;
 use solana_sdk::transaction::VersionedTransaction;
+use std::collections::HashMap;
 use std::fmt::{Debug, Formatter};
 use std::sync::Arc;
 use std::time::Duration;
@@ -664,7 +665,7 @@ impl Facilitator for SolanaProvider {
                 fee_payer: self.signer_address(),
             }),
         }];
-        Ok(SupportedPaymentKindsResponse { kinds })
+        Ok(SupportedPaymentKindsResponse { kinds, _extra: HashMap::new() })
     }
 }
 
