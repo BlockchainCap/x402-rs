@@ -20,6 +20,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use solana_sdk::bs58;
 use solana_sdk::pubkey::Pubkey;
 use std::borrow::Cow;
+use std::collections::HashMap;
 use std::fmt;
 use std::fmt::{Debug, Display, Formatter};
 use std::ops::{Add, Div, Mul, Rem, Sub};
@@ -34,12 +35,14 @@ use crate::timestamp::UnixTimestamp;
 pub enum X402Version {
     /// Version `1`.
     V1,
+    V2,
 }
 
 impl Serialize for X402Version {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         match self {
             X402Version::V1 => serializer.serialize_u8(1),
+            X402Version::V2 => serializer.serialize_u8(2),
         }
     }
 }
@@ -48,6 +51,7 @@ impl Display for X402Version {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             X402Version::V1 => write!(f, "1"),
+            X402Version::V2 => write!(f, "2"),
         }
     }
 }
@@ -69,6 +73,7 @@ impl TryFrom<u8> for X402Version {
     fn try_from(value: u8) -> Result<Self, Self::Error> {
         match value {
             1 => Ok(X402Version::V1),
+            2 => Ok(X402Version::V2),
             _ => Err(X402VersionError(value)),
         }
     }
@@ -80,7 +85,10 @@ impl<'de> Deserialize<'de> for X402Version {
         D: Deserializer<'de>,
     {
         let num = u8::deserialize(deserializer)?;
-        X402Version::try_from(num).map_err(serde::de::Error::custom)
+        match X402Version::try_from(num) {
+            Ok(version) => Ok(version),
+            Err(e) => Err(serde::de::Error::custom(e.to_string())),
+        }
     }
 }
 
@@ -1415,6 +1423,8 @@ pub struct SupportedPaymentKindExtra {
 #[allow(dead_code)] // Public for consumption by downstream crates.
 pub struct SupportedPaymentKindsResponse {
     pub kinds: Vec<SupportedPaymentKind>,
+    #[serde(flatten)]
+    pub _extra: HashMap<String, serde_json::Value>,
 }
 
 sol!(

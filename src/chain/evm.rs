@@ -13,6 +13,7 @@
 //! Invariants:
 //! - Settlement is atomic: deploy (if needed) + transfer happen in a single user flow.
 //! - Verification does not persist state.
+use std::collections::HashMap;
 
 use alloy::contract::SolCallBuilder;
 use alloy::dyn_abi::SolType;
@@ -675,7 +676,7 @@ where
             scheme: Scheme::Exact,
             extra: None,
         }];
-        Ok(SupportedPaymentKindsResponse { kinds })
+        Ok(SupportedPaymentKindsResponse { kinds, _extra: HashMap::new() })
     }
 }
 

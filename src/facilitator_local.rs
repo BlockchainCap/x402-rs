@@ -17,6 +17,8 @@ use crate::provider_cache::ProviderMap;
 use crate::types::{
     SettleRequest, SettleResponse, SupportedPaymentKindsResponse, VerifyRequest, VerifyResponse,
 };
+use std::collections::HashMap;
+
 
 /// A concrete [`Facilitator`] implementation that verifies and settles x402 payments
 /// using a network-aware provider cache.
@@ -101,6 +103,6 @@ where
             let mut supported_kinds = supported.map(|k| k.kinds).unwrap_or_default();
             kinds.append(&mut supported_kinds);
         }
-        Ok(SupportedPaymentKindsResponse { kinds })
+        Ok(SupportedPaymentKindsResponse { kinds, _extra: HashMap::new() })
     }
 }

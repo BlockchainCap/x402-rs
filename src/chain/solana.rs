@@ -11,6 +11,7 @@ use std::fmt::{Debug, Formatter};
 use std::sync::Arc;
 use std::time::Duration;
 use tracing_core::Level;
+use std::collections::HashMap;
 
 use crate::chain::{FacilitatorLocalError, FromEnvByNetworkBuild, NetworkProviderOps};
 use crate::facilitator::Facilitator;
@@ -664,7 +665,7 @@ impl Facilitator for SolanaProvider {
                 fee_payer: self.signer_address(),
             }),
         }];
-        Ok(SupportedPaymentKindsResponse { kinds })
+        Ok(SupportedPaymentKindsResponse { kinds, _extra: HashMap::new() })
     }
 }
 
